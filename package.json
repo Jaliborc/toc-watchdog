@@ -1,7 +1,7 @@
 {
-	"name": "wow-toc-changes",
+	"name": "toc-watchdog",
 	"version": "1.0.0",
-	"description": "Watches the Warcraft Wiki page's CDNs & directories table and sends update notification via ntfy.sh",
+	"description": "Watches the Warcraft Wiki page's CDNs & directories table and sends update notifications via ntfy.sh",
 	"main": "main.js",
 	"author": "João L. Cardoso (jaliborc)",
 	"scripts": {

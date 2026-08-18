@@ -1,4 +1,4 @@
-# WoW TOC Changes
+# TOC Watchdog
 
 Watches the Warcraft Wiki [Template:LatestPatchInfo](https://warcraft.wiki.gg/wiki/Template:LatestPatchInfo) page's CDNs & directories table multiple times a day. Sends a push notification via ntfy.sh when a new game type appears, or an existing game type's `TOC` number changes.
 
