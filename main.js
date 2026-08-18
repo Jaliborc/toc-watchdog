@@ -24,32 +24,36 @@ function main() {
 	if (process.argv.includes('--now'))
 		checkForUpdates()
 
-	console.log(chalk`{blue.bold 🕒 Scheduling check with cron expression} {yellow "${CRON_SCHEDULE}"}`)
+	console.log(chalk`{blue.bold 🕒 Scheduling check with cron schedule} {yellow "${CRON_SCHEDULE}"}`)
 	cron.schedule(CRON_SCHEDULE, checkForUpdates)
 }
 
 async function checkForUpdates() {
-	const timestamp = chalk`{gray [${new Date().toISOString()}]}`
-	console.log(`${timestamp} ` + chalk`{cyan 🔍 Checking} {underline.cyan ${PAGE_URL}}...`)
+	try {
+		const timestamp = chalk`{gray [${new Date().toISOString()}]}`
+		console.log(`${timestamp} ` + chalk`{cyan 🔍 Checking} {underline.cyan ${PAGE_URL}}...`)
 
-	const html = await fetchText(PAGE_URL)
-	if (!html)
-		return console.error(chalk`{red.bold ✖ Failed to fetch the patch info page}`)
+		const html = await fetchText(PAGE_URL)
+		if (!html)
+			return await logError('Failed to fetch the patch info page')
 
-	const current = parseCdnTable(html)
-	if (!current)
-		return console.error(chalk`{red.bold ✖ Could not find the "CDNs & directories" table on the page}`)
+		const current = parseCdnTable(html)
+		if (!current)
+			return await logError('Could not find the "CDNs & directories" table on the page')
 
-	const previous = await loadState(STATE_FILE_PATH)
-	if (Object.keys(previous).length === 0) {
-		console.log(chalk`{yellow ℹ No prior state found, establishing baseline without notifying}`)
-		return saveState(STATE_FILE_PATH, current)
+		const previous = await loadState(STATE_FILE_PATH)
+		if (Object.keys(previous).length === 0) {
+			console.log(chalk`{cyan ℹ  No prior state found, estabilished baseline without notifying}`)
+			return await saveState(STATE_FILE_PATH, current)
+		}
+
+		await notifyChanges(findChanges(previous, current))
+		await saveState(STATE_FILE_PATH, current)
+
+		console.log(chalk`{cyan ✔ Check completed}`)
+	} catch (error) {
+		await logerroror(`Exception: ${error?.message || error}`)
 	}
-
-	await notifyChanges(findChanges(previous, current))
-	await saveState(STATE_FILE_PATH, current)
-
-	console.log(chalk`{cyan ✔ Check completed}`)
 }
 
 // Parsing
@@ -122,9 +126,14 @@ function getPriority(version) {
 }
 
 // Ntfy.sh
+async function logError(message) {
+	console.error(chalk`{red.bold ✖ ${message}}`)
+	await ntfy('Server Error', message, 'default', 'x')
+}
+
 async function notifyChanges(notifications) {
 	if (notifications.length === 0)
-		return console.log('No changes found')
+		return console.log(chalk`{dim ℹ  No changes found}`)
 
 	console.log(chalk`{magenta 🔔 Sending notifications...}`)
 	for (const notification of notifications) {
@@ -132,16 +141,14 @@ async function notifyChanges(notifications) {
 		if (error) {
 			console.error(chalk`{red ✖ Notification failed:} ${notification.message} {gray (${error})}`)
 		} else {
-			console.log(
-				chalk`{green 	⌯⌲ Sent notification} {gray [${notification.priority}]} ${notification.message}`
-			)
+			console.log(chalk`{green     ⌯⌲ Sent notification} {gray [${notification.priority}]} ${notification.message}`)
 		}
 	}
 }
 
 async function ntfy(title, body, priority, tags) {
 	const response = await fetch(NTFY_URL, {
-		method: 'POST',body,
+		method: 'POST', body,
 		headers: {
 			Title: title,
 			Priority: priority,
