@@ -6,8 +6,8 @@ const cheerio = require('cheerio')
 const cron = require('node-cron')
 const chalk = require('chalk-template').default
 
-const PASSWORD = 'AxekcnAQkS'
-const NTFY_URL = `https://ntfy.sh/wow-toc-changes-${PASSWORD}`
+const PASSWORD = 'AxekcnAQkSk'
+const NTFY_URL = `https://ntfy.sh/toc-watchdog-${PASSWORD}`
 const PAGE_URL = 'https://warcraft.wiki.gg/wiki/Template:LatestPatchInfo'
 const STATE_FILE_PATH = path.resolve(__dirname, 'state.json')
 const CRON_SCHEDULE = '0 11,15,19,23 * * *'
@@ -28,9 +28,10 @@ function main() {
 	if (process.argv.includes('--now'))
 		return checkForUpdates()
 
-	if (process.argv.includes('--cron'))
+	if (process.argv.includes('--cron')) {
 		console.log(chalk`{blue.bold 🕒 Scheduling check with cron schedule} {yellow "${CRON_SCHEDULE}"}`)
-		cron.schedule(CRON_SCHEDULE, checkForUpdates)
+		return cron.schedule(CRON_SCHEDULE, checkForUpdates)
+	}
 
 	http.createServer(async (request, response) => {
 		if (request.url && request.url.includes(PASSWORD)) {
