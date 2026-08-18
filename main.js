@@ -8,10 +8,16 @@ const PAGE_URL = 'https://warcraft.wiki.gg/wiki/Template:LatestPatchInfo'
 const NTFY_URL = 'https://ntfy.sh/wow-toc-changes-testing123'
 const STATE_FILE_PATH = path.resolve(__dirname, 'state.json')
 const CRON_SCHEDULE = '0 11,15,19,23 * * *'
+
 const PRIORITY_RULES = [
 	{ keyword: 'beta', priority: 'low' },
 	{ keyword: 'ptr',  priority: 'default' }
 ]
+const PRIORITY_TAGS = {
+	low: 'test_tube',
+	default: 'beetle',
+	urgent: 'video_game'
+}
 
 // Run
 function main() {
@@ -96,13 +102,13 @@ function findChanges(previousEntries, currentEntries) {
 
 		if (!previous) {
 			notifications.push({
-				title: 'World of Warcraft Updated', priority,
-				message: `New type: ${name} (${key})`,
+				title: 'New WoW Type', priority,
+				message: `${name} (${key})`,
 			})
 		} else if (previous['Interface'] !== current['Interface']) {
 			notifications.push({
-				title: 'World of Warcraft Updated', priority,
-				message: `${name} updated ${previous['Interface']} → ${current['Interface']}`,
+				title: `${name} WoW Updated`, priority,
+				message: `${previous['Interface']} → ${current['Interface']}`,
 			})
 		}
 	}
@@ -122,7 +128,7 @@ async function notifyChanges(notifications) {
 
 	console.log(chalk`{magenta 🔔 Sending notifications...}`)
 	for (const notification of notifications) {
-		const error = await ntfy(notification.title, notification.message, notification.priority)
+		const error = await ntfy(notification.title, notification.message, notification.priority, PRIORITY_TAGS[notification.priority])
 		if (error) {
 			console.error(chalk`{red ✖ Notification failed:} ${notification.message} {gray (${error})}`)
 		} else {
@@ -133,14 +139,13 @@ async function notifyChanges(notifications) {
 	}
 }
 
-async function ntfy(title, message, priority) {
+async function ntfy(title, body, priority, tags) {
 	const response = await fetch(NTFY_URL, {
-		method: 'POST',
-		body: message,
+		method: 'POST',body,
 		headers: {
 			Title: title,
 			Priority: priority,
-			Tags: 'video_game',
+			Tags: tags,
 		},
 	}).catch(() => null)
 
