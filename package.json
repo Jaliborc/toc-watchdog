@@ -1,0 +1,15 @@
+{
+	"name": "wow-toc-changes",
+	"version": "1.0.0",
+	"description": "Watches the Warcraft Wiki page's CDNs & directories table and sends update notification via ntfy.sh",
+	"main": "main.js",
+	"author": "João L. Cardoso (jaliborc)",
+	"scripts": {
+		"start": "node main.js"
+	},
+	"packageManager": "pnpm@10.32.1",
+	"dependencies": {
+		"cheerio": "^1.2.0",
+		"node-cron": "^4.6.0"
+	}
+}
