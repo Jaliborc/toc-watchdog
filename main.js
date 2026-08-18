@@ -6,7 +6,7 @@ const cheerio = require('cheerio')
 const cron = require('node-cron')
 const chalk = require('chalk-template').default
 
-const PASSWORD = 'testing123'
+const PASSWORD = 'AxekcnAQkS'
 const NTFY_URL = `https://ntfy.sh/wow-toc-changes-${PASSWORD}`
 const PAGE_URL = 'https://warcraft.wiki.gg/wiki/Template:LatestPatchInfo'
 const STATE_FILE_PATH = path.resolve(__dirname, 'state.json')
