@@ -22,7 +22,7 @@ const PRIORITY_TAGS = {
 // Run
 function main() {
 	if (process.argv.includes('--now'))
-		checkForUpdates()
+		return checkForUpdates()
 
 	console.log(chalk`{blue.bold 🕒 Scheduling check with cron schedule} {yellow "${CRON_SCHEDULE}"}`)
 	cron.schedule(CRON_SCHEDULE, checkForUpdates)
