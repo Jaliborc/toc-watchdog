@@ -2,14 +2,15 @@ const fs = require('fs')
 const path = require('path')
 const cheerio = require('cheerio')
 const cron = require('node-cron')
+const chalk = require('chalk-template').default
 
 const PAGE_URL = 'https://warcraft.wiki.gg/wiki/Template:LatestPatchInfo'
 const NTFY_URL = 'https://ntfy.sh/wow-toc-changes-testing123'
 const STATE_FILE_PATH = path.resolve(__dirname, 'state.json')
 const CRON_SCHEDULE = '0 11,15,19,23 * * *'
 const PRIORITY_RULES = [
-    { keyword: 'beta', priority: 'low' },
-    { keyword: 'ptr',  priority: 'default' }
+	{ keyword: 'beta', priority: 'low' },
+	{ keyword: 'ptr',  priority: 'default' }
 ]
 
 // Run
@@ -17,31 +18,32 @@ function main() {
 	if (process.argv.includes('--now'))
 		checkForUpdates()
 
-	console.log(`Scheduling check with cron expression "${CRON_SCHEDULE}"`)
+	console.log(chalk`{blue.bold 🕒 Scheduling check with cron expression} {yellow "${CRON_SCHEDULE}"}`)
 	cron.schedule(CRON_SCHEDULE, checkForUpdates)
 }
 
 async function checkForUpdates() {
-	console.log(`[${new Date().toISOString()}] Checking ${PAGE_URL}...`)
+	const timestamp = chalk`{gray [${new Date().toISOString()}]}`
+	console.log(`${timestamp} ` + chalk`{cyan 🔍 Checking} {underline.cyan ${PAGE_URL}}...`)
 
 	const html = await fetchText(PAGE_URL)
 	if (!html)
-		return console.error('Failed to fetch the patch info page')
+		return console.error(chalk`{red.bold ✖ Failed to fetch the patch info page}`)
 
 	const current = parseCdnTable(html)
 	if (!current)
-		return console.error('Could not find the "CDNs & directories" table on the page')
+		return console.error(chalk`{red.bold ✖ Could not find the "CDNs & directories" table on the page}`)
 
 	const previous = await loadState(STATE_FILE_PATH)
 	if (Object.keys(previous).length === 0) {
-		console.log('No prior state found, establishing baseline without notifying')
+		console.log(chalk`{yellow ℹ No prior state found, establishing baseline without notifying}`)
 		return saveState(STATE_FILE_PATH, current)
 	}
 
 	await notifyChanges(findChanges(previous, current))
 	await saveState(STATE_FILE_PATH, current)
 
-	console.log(`Completed check.`)
+	console.log(chalk`{cyan ✔ Check completed}`)
 }
 
 // Parsing
@@ -95,7 +97,7 @@ function findChanges(previousEntries, currentEntries) {
 		if (!previous) {
 			notifications.push({
 				title: 'World of Warcraft Updated', priority,
-				message: `New game type: ${name} () — interface ${current['Interface']}`,
+				message: `New type: ${name} (${key})`,
 			})
 		} else if (previous['Interface'] !== current['Interface']) {
 			notifications.push({
@@ -109,19 +111,25 @@ function findChanges(previousEntries, currentEntries) {
 }
 
 function getPriority(version) {
-    const name = version.Name?.toLowerCase() ?? ''
-    return PRIORITY_RULES.find(rule => name.includes(rule.keyword))?.priority ?? 'urgent'
+	const name = version.Name?.toLowerCase() ?? ''
+	return PRIORITY_RULES.find(rule => name.includes(rule.keyword))?.priority ?? 'urgent'
 }
 
 // Ntfy.sh
 async function notifyChanges(notifications) {
-	console.log(notifications)
+	if (notifications.length === 0)
+		return console.log('No changes found')
+
+	console.log(chalk`{magenta 🔔 Sending notifications...}`)
 	for (const notification of notifications) {
 		const error = await ntfy(notification.title, notification.message, notification.priority)
-		if (error)
-			console.error(`Notification failed: ${error}`)
-		else
-			console.log(`Notified ntfy.sh (${notification.priority}): ${notification.message}`)
+		if (error) {
+			console.error(chalk`{red ✖ Notification failed:} ${notification.message} {gray (${error})}`)
+		} else {
+			console.log(
+				chalk`{green 	⌯⌲ Sent notification} {gray [${notification.priority}]} ${notification.message}`
+			)
+		}
 	}
 }
 
