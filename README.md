@@ -1,24 +1,24 @@
 # TOC Watchdog
 
-Watches the Warcraft Wiki [Template:LatestPatchInfo](https://warcraft.wiki.gg/wiki/Template:LatestPatchInfo) page's CDNs & directories table multiple times a day. Sends a push notification via ntfy.sh when a new game type appears, or an existing game type's `TOC` number changes.
+Monitors the Warcraft Wiki [Template:LatestPatchInfo](https://warcraft.wiki.gg/wiki/Template:LatestPatchInfo) page's **CDNs & directories** table for updates. When a new game version is detected or an existing version's `Interface` number changes, it dispatches push notifications via [ntfy.sh](https://ntfy.sh).
 
-## Install
 
-```bash
-pnpm install
-```
+## Setup
+
+1. Create a `.env` file in the project root with your ntfy channel name:
+	```env
+	NTFY_CHANNEL=your_ntfy_channel_name
+	```
+
+2. Install dependencies:
+	```bash
+	pnpm install
+	```
 
 ## Run
 
 ```bash
-# Check for updates immediately
-pnpm start --now
-
-# Internally sets up a cron job schedule
-pnpm start --cron
-
-# Start a web service that listens to job requests (default behaviour)
 pnpm start
 ```
 
-The first run has no prior state, so no entry trigers a notification. Last seen versions are kept in `state.json` next to the script.
+The first run has no prior state, so no entry trigers a notification. Last seen versions are kept in a persistent `state.json` file.
