@@ -16,7 +16,7 @@ jobs:
       - name: Install pnpm and Node
         uses: pnpm/setup@v1
         with:
-          version: 10
+          version: 11
           runtime: node@26
           cache: true
 
