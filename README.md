@@ -1,4 +1,4 @@
-# TOC Watchdog
+# TOC Watchdog 📡
 
 Monitors the Warcraft Wiki [Template:LatestPatchInfo](https://warcraft.wiki.gg/wiki/Template:LatestPatchInfo) page's **CDNs & directories** table for updates. When a new game version is detected or an existing version's `Interface` number changes, it dispatches push notifications via [ntfy.sh](https://ntfy.sh).
 
