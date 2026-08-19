@@ -40,3 +40,10 @@ jobs:
         with:
           path: state.json
           key: persistent-state-${{ runner.os }}-${{ github.run_id }}
+
+      - name: Make available as artifact
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: state
+          path: state.json
