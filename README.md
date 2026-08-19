@@ -8,7 +8,7 @@ Monitors the Warcraft Wiki [Template:LatestPatchInfo](https://warcraft.wiki.gg/w
 ## Run on GitHub Actions
 
 1.  Fork repository.
-2.  Navigate to repository __Settings > Secrets and variables > Actions__, and create a `NTFY_CHANNEL` repository secret, with is a secret ntfy channel name of your choice.
+2.  Navigate to repository __Settings > Secrets and variables > Actions__, and create a `NTFY_CHANNEL` repository secret, which is a (secret) ntfy topic of your choice.
 
 
 ## Run Locally
