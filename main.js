@@ -1,17 +1,11 @@
 const fs = require('fs')
 const path = require('path')
-const http = require('http')
-
 const cheerio = require('cheerio')
-const cron = require('node-cron')
 const chalk = require('chalk-template').default
 
-const PASSWORD = 'AxekcnAQkSk'
-const NTFY_URL = `https://ntfy.sh/toc-watchdog-${PASSWORD}`
+const NTFY_URL = `https://ntfy.sh/${process.env.NTFY_CHANNEL}`
 const PAGE_URL = 'https://warcraft.wiki.gg/wiki/Template:LatestPatchInfo'
 const STATE_FILE_PATH = path.resolve(__dirname, 'state.json')
-const CRON_SCHEDULE = '0 11,15,19,23 * * *'
-const PORT = process.env.PORT || 3000
 
 const PRIORITY_RULES = [
 	{ keyword: 'beta', priority: 'low' },
@@ -24,28 +18,7 @@ const PRIORITY_TAGS = {
 }
 
 // Run
-function main() {
-	if (process.argv.includes('--now'))
-		return checkForUpdates()
-
-	if (process.argv.includes('--cron')) {
-		console.log(chalk`{blue.bold 🕒 Scheduling check with cron schedule} {yellow "${CRON_SCHEDULE}"}`)
-		return cron.schedule(CRON_SCHEDULE, checkForUpdates)
-	}
-
-	http.createServer(async (request, response) => {
-		if (request.url && request.url.includes(PASSWORD)) {
-			console.log(chalk`{cyan.bold 🌐 HTTP trigger received}`)
-
-			checkForUpdates()
-		}
-
-		response.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' })
-		response.end('Program running')
-	}).listen(PORT, () => { console.log(chalk`{blue.bold 🚀 HTTP Listener active on port} {yellow ${PORT}}`)})
-}
-
-async function checkForUpdates() {
+async function main() {
 	try {
 		console.log(chalk`{gray [${new Date().toISOString()}]} {cyan 🔍 Checking} {underline.cyan ${PAGE_URL}}...`)
 
