@@ -2,7 +2,7 @@ name: Monitor WoW Updates
 
 on:
   schedule:
-    - cron: '0 11-23/2 * * *' # Runs every other hour during the day
+    - cron: '0 11-23 * * *' # Runs every hour during the day
   workflow_dispatch: # Allows manual triggers from GitHub UI
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
       - name: Install pnpm and Node
         uses: pnpm/setup@v1
         with:
-          version: 11
+          version: 10
           runtime: node@26
           cache: true
 
