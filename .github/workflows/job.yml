@@ -13,16 +13,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v3
+      - name: Install pnpm and Node
+        uses: pnpm/setup@v1
         with:
-          version: 10
-
-      - name: Install Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 26
-          cache: 'pnpm'
+          version: 11
+          runtime: node@26
+          cache: true
 
       - name: Install dependencies
         run: pnpm install
@@ -36,7 +32,7 @@ jobs:
             persistent-state-${{ runner.os }}-
 
       - name: Run watchdog
-        run: pnpm start
+        run: node main.js
 
       - name: Save state.json
         uses: actions/cache/save@v4
