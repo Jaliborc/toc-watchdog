@@ -1,6 +1,6 @@
 # TOC Watchdog 📡
 
-Monitors the Warcraft Wiki [Template:LatestPatchInfo](https://warcraft.wiki.gg/wiki/Template:LatestPatchInfo) page's **CDNs & directories** table for updates. When a new game version is detected or an existing version's `Interface` number changes, it dispatches push notifications via [ntfy.sh](https://ntfy.sh).
+Monitors the Warcraft Wiki [Template:LatestPatchInfo](https://warcraft.wiki.gg/wiki/Template:LatestPatchInfo) page's **Game types** table for updates. When a new game version is detected or an existing version's `Interface` number changes, it dispatches push notifications via [ntfy.sh](https://ntfy.sh).
 
 > 💬 Now in human speak: you can install ntfy on your phone or PC, to get notifications when World of Warcraft updates.
 

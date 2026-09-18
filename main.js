@@ -53,7 +53,7 @@ async function fetchText(url) {
 
 function parseCdnTable(html) {
 	const $ = cheerio.load(html)
-	const headline = $('span.mw-headline').filter((i, el) => $(el).text().trim() === 'CDNs & directories').first()
+	const headline = $('span.mw-headline').filter((i, el) => $(el).text().trim().toLowerCase() === 'game types').first()
 	if (!headline.length) return
 
 	const heading = headline.closest('h2')
@@ -76,9 +76,9 @@ function parseCdnTable(html) {
 			record[header] = values[idx] ?? ''
 		}
 
-		const cdnValue = record['CDN value']
-		if (cdnValue)
-			entries[cdnValue] = record
+		const value = record['Value']
+		if (value)
+			entries[value] = record
 	}
 
 	return entries
@@ -89,20 +89,21 @@ function findChanges(previousEntries, currentEntries) {
 
 	for (const [key, current] of Object.entries(currentEntries)) {
 		const previous = previousEntries[key]
-		const name = current.Name || key
-		const build = current.Build || 'unknown'
+		const name = current['Game type'] || key
 		const priority = getPriority(current)
 
-		if (!previous) {
-			notifications.push({
-				title: 'New WoW Type', priority,
-				message: `${name} (${key})`,
-			})
-		} else if (previous['Interface'] !== current['Interface']) {
-			notifications.push({
-				title: `${name} WoW Updated`, priority,
-				message: `${previous['Interface']} → ${current['Interface']}`,
-			})
+		if (current['Interface']) {
+			if (!previous) {
+				notifications.push({
+					title: 'New WoW Type', priority,
+					message: `${name} (${key})`,
+				})
+			} else if (previous['Interface'] !== current['Interface']) {
+				notifications.push({
+					title: `${name} WoW Updated`, priority,
+					message: `${previous['Interface']} → ${current['Interface']}`,
+				})
+			}
 		}
 	}
 
@@ -110,7 +111,7 @@ function findChanges(previousEntries, currentEntries) {
 }
 
 function getPriority(version) {
-	const name = version.Name?.toLowerCase() ?? ''
+	const name = version['Game type']?.toLowerCase() ?? ''
 	return PRIORITY_RULES.find(rule => name.includes(rule.keyword))?.priority ?? 'urgent'
 }
 
