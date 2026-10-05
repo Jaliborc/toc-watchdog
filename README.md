@@ -1,6 +1,6 @@
 # TOC Watchdog 📡
 
-Monitors the Warcraft Wiki [Template:LatestPatchInfo](https://warcraft.wiki.gg/wiki/Template:LatestPatchInfo) page's **Game types** table for updates. When a new game version is detected or an existing version's `Interface` number changes, it dispatches push notifications via [ntfy.sh](https://ntfy.sh).
+Monitors [Blizzard's CDN](https://us.version.battle.net/v2/summary) for World of Warcraft build changes. When a channel ships a new build (or a new channel shows up), it dispatches a push notification via [ntfy.sh](https://ntfy.sh), with the game type's version icon attached.
 
 > 💬 Now in human speak: you can install ntfy on your phone or PC, to get notifications when World of Warcraft updates.
 
@@ -28,4 +28,4 @@ Monitors the Warcraft Wiki [Template:LatestPatchInfo](https://warcraft.wiki.gg/w
 	pnpm start
 	```
 
-The first run has no prior state, so no entry trigers a notification. Last seen versions are kept in a persistent `state.json` file.
+The first run has no prior state, so no entry triggers a notification. Last seen builds are kept in a persistent `state.json` file.

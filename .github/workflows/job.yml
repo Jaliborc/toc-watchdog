@@ -2,7 +2,7 @@ name: Monitor WoW Updates
 
 on:
   schedule:
-    - cron: '0 11-23 * * *' # Runs every hour during the day
+    - cron: '*/30 10-23 * * *' # Runs every hour during the day
   workflow_dispatch: # Allows manual triggers from GitHub UI
 
 jobs:
@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install pnpm and Node
         uses: pnpm/setup@v1
