@@ -3,7 +3,6 @@ const path = require('path')
 const chalk = require('chalk-template').default
 const cheerio = require('cheerio')
 
-const PUBLIC_NFTY = `https://ntfy.sh/${process.env.PUBLIC_NFTY}`
 const NTFY_CHANNEL = `https://ntfy.sh/${process.env.NTFY_CHANNEL}`
 const SUMMARY_URL = 'https://us.version.battle.net/v2/summary'
 const WIKI_BASE = 'https://warcraft.wiki.gg'
@@ -230,7 +229,7 @@ async function ntfy(body, headers) {
 	if (!private?.ok)
 		return private ? `private ntfy responded with status ${private.status}` : 'Failed to reach ntfy server' 
 
-	if (PUBLIC_NFTY) {
+	if (process.env.PUBLIC_NFTY) {
 		let public = await fetch('https://ntfy.sh/toc-watchdog', { method: 'POST', body, headers }).catch(() => null)
 		if (!public?.ok)
 			return public ? `public ntfy responded with status ${public.status}` : 'Failed to reach ntfy server'
