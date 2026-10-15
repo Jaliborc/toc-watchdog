@@ -226,11 +226,14 @@ async function notifyChanges(notifications) {
 
 async function ntfy(body, headers) {
 	let private = await fetch(NTFY_URL, { method: 'POST', body, headers }).catch(() => null)
-	let public = await fetch('toc-watchdog', { method: 'POST', body, headers }).catch(() => null)
 	if (!private?.ok)
-		return private ? `private ntfy responded with status ${private.status}` : 'Failed to reach ntfy server'
-	else if (!public?.ok)
-		return public ? `public ntfy responded with status ${public.status}` : 'Failed to reach ntfy server'
+		return private ? `private ntfy responded with status ${private.status}` : 'Failed to reach ntfy server' 
+
+	if (PUBLIC_NFTY) {
+		let public = await fetch('toc-watchdog', { method: 'POST', body, headers }).catch(() => null)
+		if (!public?.ok)
+			return public ? `public ntfy responded with status ${public.status}` : 'Failed to reach ntfy server'
+	}
 }
 
 
