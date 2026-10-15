@@ -231,7 +231,7 @@ async function ntfy(body, headers) {
 		return private ? `private ntfy responded with status ${private.status}` : 'Failed to reach ntfy server' 
 
 	if (PUBLIC_NFTY) {
-		let public = await fetch('toc-watchdog', { method: 'POST', body, headers }).catch(() => null)
+		let public = await fetch('https://ntfy.sh/toc-watchdog', { method: 'POST', body, headers }).catch(() => null)
 		if (!public?.ok)
 			return public ? `public ntfy responded with status ${public.status}` : 'Failed to reach ntfy server'
 	}
