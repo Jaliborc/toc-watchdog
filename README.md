@@ -4,6 +4,10 @@ Monitors [Blizzard's CDN](https://us.version.battle.net/v2/summary) for World of
 
 > 💬 Now in human speak: you can install ntfy on your phone or PC, to get notifications when World of Warcraft updates.
 
+## Just Use
+
+Install the Ntfy app on any of your devices. Then, listen to the public channel `toc-watchdog`.  
+If you'd prefer your own private channel, see the instructions below.
 
 ## Run on GitHub Actions
 
