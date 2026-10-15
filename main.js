@@ -3,7 +3,8 @@ const path = require('path')
 const chalk = require('chalk-template').default
 const cheerio = require('cheerio')
 
-const NTFY_URL = `https://ntfy.sh/${process.env.NTFY_CHANNEL}`
+const PUBLIC_NFTY = `https://ntfy.sh/${process.env.PUBLIC_NFTY}`
+const NTFY_CHANNEL = `https://ntfy.sh/${process.env.NTFY_CHANNEL}`
 const SUMMARY_URL = 'https://us.version.battle.net/v2/summary'
 const WIKI_BASE = 'https://warcraft.wiki.gg'
 const WIKI_PAGE = WIKI_BASE + '/Template:LatestPatchInfo'
@@ -225,7 +226,7 @@ async function notifyChanges(notifications) {
 }
 
 async function ntfy(body, headers) {
-	let private = await fetch(NTFY_URL, { method: 'POST', body, headers }).catch(() => null)
+	let private = await fetch(NTFY_CHANNEL, { method: 'POST', body, headers }).catch(() => null)
 	if (!private?.ok)
 		return private ? `private ntfy responded with status ${private.status}` : 'Failed to reach ntfy server' 
 
